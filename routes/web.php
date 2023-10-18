@@ -1,12 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
 use Illuminate\Http\Request;
 use App\Http\Controllers\SocialiteController;
-
-=======
->>>>>>> main
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +18,6 @@ use App\Http\Controllers\SocialiteController;
 Route::get('/', function () {
     return view('welcome');
 });
-<<<<<<< HEAD
-
 
 Route::get('/blog', function () {
     return ('welcome');
@@ -50,5 +44,3 @@ Route::get("redirect/{provider}", [SocialiteController::class,'redirect'])->name
 
 // Le callback du provider
 Route::get("callback/{provider}", [SocialiteController::class,'callback'])->name('socialite.redirect');
-=======
->>>>>>> main
