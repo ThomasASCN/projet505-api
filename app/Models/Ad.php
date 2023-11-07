@@ -9,6 +9,7 @@ class Ad extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['title', 'jeux', 'description', 'start_date', 'end_date', 'user_id'];
     // Relation avec l'utilisateur qui a posté l'annonce
     public function user() {
         return $this->belongsTo(User::class);
