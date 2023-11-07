@@ -22,6 +22,8 @@ API ROUTE USER
 */
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+
+
 });
 Route::post('/co',[AuthController::class,'register']);
 
@@ -31,13 +33,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route pour mettre à jour le profil de l'utilisateur
     Route::put('/updateProfile', [AuthController::class, 'updateProfile']);
 
-    // Route pour mettre à jour le mot de passe de l'utilisateur
+    // Route pour mettre à jour le mot de passe de l'utilisateur    
+    Route::post('/createAd', [Adcontroller::class, 'store']);
     Route::put('/updatePassword', [AuthController::class, 'updatePassword']);
 });
 /*
 API ROUTE ANNONCE
 */
-Route::post('/createAd', [Adcontroller::class, 'store']);
 
 
 
