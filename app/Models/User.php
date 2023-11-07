@@ -41,4 +41,23 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+
+ // Relation avec les annonces (ads)
+ public function ads() {
+    return $this->hasMany(Ad::class);
+}
+
+// Relation avec les avis (reviews)
+public function reviews() {
+    return $this->hasMany(Review::class, 'user_id');
+}
+
+// Relation avec les annonces acceptées (acceptedAds) à travers la table pivot "user_ads"
+public function acceptedAds() {
+    return $this->belongsToMany(Ad::class, 'user_ads', 'user_id', 'ad_id')
+        ->withTimestamps();
+}
+
 }
