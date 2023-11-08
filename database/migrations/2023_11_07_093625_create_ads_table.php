@@ -20,6 +20,7 @@ class CreateAdsTable extends Migration
             $table->text('description');
             $table->date('start_date'); 
             $table->date('end_date');   
+            $table->boolean('is_valid')->default(false); 
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
     
