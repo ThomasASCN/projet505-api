@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdController;
+use App\Http\Controllers\ReviewController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,3 +50,13 @@ API ROUTE ANNONCE
 /*
 API ROUTE AVIS 
 */
+Route::middleware('auth:sanctum')->group(function () {
+// Route pour laisser un avis
+Route::post('/reviews', [ReviewController::class, 'store']);
+
+// Route pour obtenir les avis d'un utilisateur spécifique
+Route::get('/users/{userId}/reviews', [ReviewController::class, 'getUserReviews']);
+
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->middleware('auth:sanctum');
+
+});

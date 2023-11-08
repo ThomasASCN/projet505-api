@@ -9,6 +9,12 @@ class Review extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'message', // Ajoutez le champ 'message' ici
+        'user_id',
+        'reviewed_user_id',
+    ];
+    
     // Relation avec l'utilisateur qui a laissé l'avis
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
