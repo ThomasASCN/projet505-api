@@ -22,12 +22,20 @@ use App\Http\Controllers\ValidController;
 /*
 API ROUTE USER 
 */
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-
-
 });
-Route::post('/co',[AuthController::class,'register']);
+
+// Inscription
+Route::post('/register', [AuthController::class, 'register']);
+
+// Connexion
+Route::post('/login', [AuthController::class, 'login']);
+
+// Déconnexion
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
 
 Route::middleware('auth:sanctum')->group(function () {
     // Autres routes protégées
@@ -35,15 +43,30 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route pour mettre à jour le profil de l'utilisateur
     Route::put('/updateProfile', [AuthController::class, 'updateProfile']);
 
-    // Route pour mettre à jour le mot de passe de l'utilisateur    
+    // Route pour mettre à jour le mot de passe de l'utilisateur   
+    Route::put('/updatePassword', [AuthController::class, 'updatePassword']); 
+
+    
     Route::post('/createAd', [Adcontroller::class, 'store']);
-    Route::put('/updatePassword', [AuthController::class, 'updatePassword']);
+
 });
 /*
 API ROUTE ANNONCE
 */
 
 
+Route::middleware('auth:sanctum')->group(function () {
+// Routes pour l'annonce
+Route::post('/ads', [AdController::class, 'store'])->middleware('auth'); // Endpoint pour créer une annonce
+Route::post('/ads/{adId}/validate', [AdController::class, 'validateAdByUser'])->middleware('auth'); // Endpoint pour que l'utilisateur valide une annonce
+
+//Route::post('/ad/{adId}/accept', [AdController::class, 'acceptAdByUser']);
+Route::put('/ad/{adId}/accept', [AdController::class, 'acceptAdByUser']);
+
+
+
+
+});
 
 /*
 API ROUTE AVIS 
