@@ -62,11 +62,8 @@ Route::post('/ads/{adId}/validate', [AdController::class, 'validateAdByUser'])->
 
 //Route::post('/ad/{adId}/accept', [AdController::class, 'acceptAdByUser']);
 Route::put('/ad/{adId}/accept', [AdController::class, 'acceptAdByUser']);
-
-
-
-
 });
+Route::get('/games', [AdController::class, 'getGames']);
 
 /*
 API ROUTE AVIS 
