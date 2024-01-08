@@ -109,6 +109,15 @@ public function getGames() {
     $games = Game::all();
     return response()->json($games);
 }
+public function getValidAds() {
+    $now = now();
+    $ads = Ad::with(['game', 'user'])
+             ->where('end_date', '>=', $now)
+             ->where('is_user_validated', false) 
+             ->get();
+    return response()->json($ads);
+}
+
 
 
 

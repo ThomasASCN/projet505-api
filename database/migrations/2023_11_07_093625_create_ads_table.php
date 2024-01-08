@@ -17,8 +17,8 @@ class CreateAdsTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->date('start_date'); 
-            $table->date('end_date');   
+            $table->datetime('start_date'); 
+            $table->datetime('end_date');   
             $table->boolean('is_valid')->default(false); //validation par le proprio de l'annonce
             $table->boolean('is_user_validated')->default(false); // validation pas un user
 

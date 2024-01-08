@@ -25,6 +25,10 @@ class Ad extends Model
     {
         return $this->belongsTo(Game::class, 'game_id');
     }
+    protected $casts = [
+        'start_date' => 'datetime:Y-m-d H:i:s', // Inclut l'heure
+        'end_date' => 'datetime:Y-m-d H:i:s', // Inclut l'heure
+    ];
     
 
    
