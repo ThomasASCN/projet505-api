@@ -62,9 +62,19 @@ Route::post('/ads/{adId}/validate', [AdController::class, 'validateAdByUser'])->
 
 //Route::post('/ad/{adId}/accept', [AdController::class, 'acceptAdByUser']);
 Route::put('/ad/{adId}/accept', [AdController::class, 'acceptAdByUser']);
+Route::get('/accepted-ads', [AdController::class, 'getAcceptedAds']);
+Route::get('/posted-ads', [AdController::class, 'getPostedAds']);
+Route::post('/ads/{adId}/unvalidate', [AdController::class, 'unvalidateAdByUser']);
+Route::post('/ads/{adId}/finalize-validation', [AdController::class, 'finalizeAdValidation'])->middleware('auth');
+Route::get('/double-validated-ads', [AdController::class, 'getDoubleValidatedAds'])->middleware('auth');
+Route::post('/ads/{adId}/unfinalize-validation', [AdController::class, 'unfinalizeAdValidation'])->middleware('auth');
+Route::delete('/ads/{adId}', [AdController::class, 'deleteAd'])->middleware('auth');
+
+
 });
 Route::get('/games', [AdController::class, 'getGames']);
 Route::get('/valid-ads', [AdController::class, 'getValidAds']);
+
 
 /*
 API ROUTE AVIS 

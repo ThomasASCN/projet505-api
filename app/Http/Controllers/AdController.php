@@ -65,7 +65,7 @@ class AdController extends Controller
     }
     
     
-// AdController.php
+
 
 public function acceptAdByUser(Request $request, $adId)
 {
@@ -117,6 +117,157 @@ public function getValidAds() {
              ->get();
     return response()->json($ads);
 }
+
+public function getAcceptedAds() {
+    if (Auth::check()) {
+        $user = Auth::user();
+        $ads = Ad::with(['game', 'user'])
+                 ->whereHas('acceptedByUsers', function ($query) use ($user) {
+                     $query->where('user_id', $user->id);
+                 })
+                 ->where('user_id', '!=', $user->id) 
+                 ->where('is_user_validated', true)
+                 ->get();
+
+        return response()->json($ads);
+    }
+
+    return response()->json(['message' => 'Non authentifié'], 401);
+}
+
+
+
+public function getPostedAds() {
+    if (Auth::check()) {
+        $user = Auth::user();
+        $ads = Ad::with(['game', 'acceptedByUsers'])
+                 ->where('user_id', $user->id)
+                 ->get();
+
+        foreach ($ads as $ad) {
+            $validators = $ad->acceptedByUsers->filter(function ($acceptedUser) use ($user) {
+                return $acceptedUser->id != $user->id;
+            })->pluck('name');
+
+            $ad->validators = $validators;
+        }
+
+        return response()->json($ads);
+    }
+
+    return response()->json(['message' => 'Non authentifié'], 401);
+}
+
+public function unvalidateAdByUser(Request $request, $adId)
+{
+    if (Auth::check()) {
+        $user = Auth::user();
+        $ad = Ad::with('acceptedByUsers')->find($adId);
+
+        if ($ad && $ad->acceptedByUsers->contains($user->id) && $ad->is_user_validated) {
+            $ad->is_user_validated = false;
+            $ad->acceptedByUsers()->detach($user->id); 
+
+            $ad->save();
+
+            return response()->json(['message' => 'Validation de l\'annonce supprimée.'], 200);
+        } else {
+            return response()->json(['message' => 'Action non autorisée ou annonce déjà non validée.'], 403);
+        }
+    } else {
+        return response()->json(['message' => 'L\'utilisateur n\'est pas authentifié.'], 401);
+    }
+}
+
+public function finalizeAdValidation(Request $request, $adId)
+{
+    if (Auth::check()) {
+        $user = Auth::user();
+        $ad = Ad::find($adId);
+
+        if ($ad && $ad->user_id == $user->id) {
+            $validatedData = $request->validate([
+                'is_valid' => 'required|boolean',
+            ]);
+
+            $ad->is_valid = $validatedData['is_valid'];
+
+            if (!$ad->is_valid) {
+                $ad->is_user_validated = false;
+                $ad->acceptedByUsers()->detach(); 
+            }
+
+            $ad->save();
+
+            return response()->json(['message' => 'Statut de l\'annonce mis à jour.'], 200);
+        } else {
+            return response()->json(['message' => 'Vous n\'êtes pas autorisé à gérer cette annonce ou annonce non trouvée.'], 403);
+        }
+    } else {
+        return response()->json(['message' => 'L\'utilisateur n\'est pas authentifié.'], 401);
+    }
+}
+
+public function getDoubleValidatedAds() {
+    if (Auth::check()) {
+        $user = Auth::user();
+        $ads = Ad::with(['game', 'user'])
+                 ->where('is_valid', true)
+                 ->where('is_user_validated', true)
+                 ->where(function ($query) use ($user) {
+                     $query->where('user_id', $user->id)
+                           ->orWhereHas('acceptedByUsers', function ($subQuery) use ($user) {
+                               $subQuery->where('user_id', $user->id);
+                           });
+                 })
+                 ->get();
+
+        return response()->json($ads);
+    }
+
+    return response()->json(['message' => 'Non authentifié'], 401);
+}
+
+public function unfinalizeAdValidation($adId)
+{
+    if (Auth::check()) {
+        $ad = Ad::find($adId);
+        if ($ad) {
+            $ad->is_user_validated = false;
+            $ad->is_valid = false;
+            $ad->save();
+
+            return response()->json(['message' => 'Annulation du ticket.']);
+        }
+
+        return response()->json(['message' => 'ticket non trouvé'], 404);
+    }
+
+    return response()->json(['message' => 'vous n etes pas autorisé'], 401);
+}
+
+public function deleteAd($adId)
+{
+    if (Auth::check()) {
+        $user = Auth::user();
+        $ad = Ad::find($adId);
+
+        if (!$ad) {
+            return response()->json(['message' => 'Annonce non trouvée.'], 404);
+        }
+
+        if ($ad->user_id != $user->id || $ad->is_valid || $ad->is_user_validated) {
+            return response()->json(['message' => 'Action non autorisée.'], 403);
+        }
+
+        $ad->delete();
+        return response()->json(['message' => 'Annonce supprimée avec succès.'], 200);
+    }
+
+    return response()->json(['message' => 'Non authentifié'], 401);
+}
+
+
 
 
 
