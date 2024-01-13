@@ -49,6 +49,9 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('/createAd', [Adcontroller::class, 'store']);
 
+    Route::get('/profile', [AuthController::class, 'getProfile'])->middleware('auth:sanctum');
+
+
 });
 /*
 API ROUTE ANNONCE

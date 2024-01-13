@@ -107,5 +107,9 @@ class AuthController extends Controller
         return response()->json(['message' => 'Mot de passe mis à jour avec succès']);
     }
     
-
+    public function getProfile()
+    {
+        $user = Auth::user();
+        return response()->json($user);
+    }
 }
