@@ -112,4 +112,9 @@ class AuthController extends Controller
         $user = Auth::user();
         return response()->json($user);
     }
+    public function index()
+    {
+        $users = User::all();
+        return response()->json($users);
+    }
 }

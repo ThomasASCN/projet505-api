@@ -27,20 +27,25 @@ class ReviewController extends Controller
         ]);
     
         $review->save();
-    
+        $review = Review::with(['user', 'reviewedUser'])->find($review->id);
+
         return response()->json($review, 201);
+    
     }
 
     public function getUserReviews($userId)
     {
         $user = User::find($userId);
-
+    
         if (!$user) {
             return response()->json(['message' => 'Utilisateur non trouvé.'], 404);
         }
-
-        $reviews = Review::where('reviewed_user_id', $userId)->get();
-
+    
+        // Charge les relations 'user' et 'reviewedUser' avec les avis
+        $reviews = Review::with(['user', 'reviewedUser'])
+                         ->where('reviewed_user_id', $userId)
+                         ->get();
+    
         return response()->json($reviews);
     }
     // suppresion d'avis 
@@ -53,6 +58,11 @@ class ReviewController extends Controller
     } else {
         return response()->json(['message' => 'Vous n\'êtes pas autorisé à supprimer cet avis'], 403);
     }
+}
+public function index()
+{
+    $reviews = Review::with(['user', 'reviewedUser'])->get();
+    return response()->json($reviews);
 }
 
 }

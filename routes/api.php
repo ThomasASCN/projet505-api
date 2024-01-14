@@ -89,5 +89,7 @@ Route::post('/reviews', [ReviewController::class, 'store']);
 Route::get('/users/{userId}/reviews', [ReviewController::class, 'getUserReviews']);
 // Route pour supprimer un avis 
 Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->middleware('auth:sanctum');
+Route::get('/reviews', [ReviewController::class, 'index'])->middleware('auth:sanctum');
+Route::get('/users', [AuthController::class, 'index'])->middleware('auth:sanctum');
 
 });
